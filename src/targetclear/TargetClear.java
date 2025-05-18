@@ -110,10 +110,7 @@ public class TargetClear {
     }
 
     static void updateTargets(List<Integer> targets, boolean trainingGame, int maxTarget) {
-        for (int count = 0; count <= targets.size() - 2; count++) {
-            targets.set(count, targets.get(count + 1));
-        }
-        targets.remove(targets.size() - 1);
+        targets.remove(0);
         if (trainingGame) {
             targets.add(targets.get(targets.size() - 1));
         } else {
