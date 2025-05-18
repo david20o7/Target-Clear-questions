@@ -2,16 +2,18 @@
 
 ## Description
 
-This task extends the Skeleton Program to allow the user to end the game at any point rather than wait until they are beaten by the targets. Modify the application to allow the user to enter the word "QUIT" to end the game rather than entering an expression. The program should quit and display the final score.
+- This task extends the Skeleton Program to allow the user to end the game at any point rather than wait until they are beaten by the targets.
+- Modify the application to allow the user to enter the word "QUIT" to end the game rather than entering an expression.
+- The program should quit and display the final score.
 
 ## Task Requirements
 
 ### Task 1.1: Update the Game Logic
 
-- [ ] Update the `playGame` method to allow the user to enter the word "QUIT" instead of an expression
-- [ ] Ensure that the code does not decrement the score on that turn when "QUIT" is entered
-- [ ] Add logic to test the user input to either play the turn if they enter an expression or quit the game
-- [ ] Display the current score when quitting the game
+- [x] Update the `playGame` method to allow the user to enter the word "QUIT" instead of an expression
+- [x] Ensure that the code does not decrement the score on that turn when "QUIT" is entered
+- [x] Add logic to test the user input to either play the turn if they enter an expression or quit the game
+- [x] Display the current score when quitting the game
 
 ### Task 1.2: Testing Requirements
 
