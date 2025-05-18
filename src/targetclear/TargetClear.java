@@ -28,6 +28,7 @@ public class TargetClear {
     public static void main(String[] args) {
         List<Integer> numbersAllowed = new ArrayList<Integer>();
         List<Integer> targets;
+
         int maxNumberOfTargets = 20;
         int maxTarget;
         int maxNumber;
