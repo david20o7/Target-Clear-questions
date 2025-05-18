@@ -16,8 +16,10 @@ import java.util.HashMap;
 public class TargetClear {
     static Scanner scanner = new Scanner(System.in);
     static Random rGen = new Random();
+
     static class IntWrapper {
         public int value;
+
         IntWrapper(int initialValue) {
             value = initialValue;
         }
@@ -37,7 +39,8 @@ public class TargetClear {
             maxNumber = 1000;
             maxTarget = 1000;
             trainingGame = true;
-            targets = new ArrayList<Integer>(Arrays.asList(-1, -1, -1, -1, -1, 23, 9, 140, 82, 121, 34, 45, 68, 75, 34, 23, 119, 43, 23, 119));
+            targets = new ArrayList<Integer>(
+                    Arrays.asList(-1, -1, -1, -1, -1, 23, 9, 140, 82, 121, 34, 45, 68, 75, 34, 23, 119, 43, 23, 119));
         } else {
             maxNumber = 10;
             maxTarget = 50;
@@ -117,7 +120,8 @@ public class TargetClear {
         }
     }
 
-    static boolean checkNumbersUsedAreAllInNumbersAllowed(List<Integer> numbersAllowed, List<String> userInputInRPN, int maxNumber) {
+    static boolean checkNumbersUsedAreAllInNumbersAllowed(List<Integer> numbersAllowed, List<String> userInputInRPN,
+            int maxNumber) {
         List<Integer> temp = new ArrayList<Integer>();
         for (int item : numbersAllowed) {
             temp.add(item);
