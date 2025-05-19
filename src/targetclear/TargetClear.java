@@ -84,12 +84,18 @@ public class TargetClear {
 
     static boolean checkIfUserInputEvaluationIsATarget(List<Integer> targets, List<String> userInputInRPN,
             IntWrapper score) {
-        int userInputEvaluation = evaluateRPN(userInputInRPN);
+
+        IntWrapper usedOperandCount = new IntWrapper(0);
+        int someValue
+
+        int userInputEvaluation = evaluateRPN(userInputInRPN, usedOperandCount);
+
         boolean userInputEvaluationIsATarget = false;
         if (userInputEvaluation != -1) {
             for (int count = 0; count < targets.size(); count++) {
                 if (targets.get(count) == userInputEvaluation) {
-                    score.value = score.value + 2;
+                    int bonusPoints = 2 * usedOperandCount.value;
+                    score.value = score.value + 2 + bonusPoints;
                     targets.set(count, -1);
                     userInputEvaluationIsATarget = true;
                 }
@@ -222,7 +228,7 @@ public class TargetClear {
         return userInputInRPN;
     }
 
-    static int evaluateRPN(List<String> userInputInRPN) {
+    static int evaluateRPN(List<String> userInputInRPN, IntWrapper usedSignsCount) {
         List<String> s = new ArrayList<String>();
         while (userInputInRPN.size() > 0) {
             while (!"+-*/".contains(userInputInRPN.get(0))) {
@@ -237,15 +243,19 @@ public class TargetClear {
             switch (userInputInRPN.get(0)) {
                 case "+":
                     result = num1 + num2;
+                    usedSignsCount.value = usedSignsCount.value + 1;
                     break;
                 case "-":
                     result = num1 - num2;
+                    usedSignsCount.value = usedSignsCount.value + 1;
                     break;
                 case "*":
                     result = num1 * num2;
+                    usedSignsCount.value = usedSignsCount.value + 1;
                     break;
                 case "/":
                     result = num1 / num2;
+                    usedSignsCount.value = usedSignsCount.value + 1;
                     break;
             }
             userInputInRPN.remove(0);
