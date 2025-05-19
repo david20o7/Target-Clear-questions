@@ -32,10 +32,12 @@ public class TargetClear {
         int maxNumberOfTargets = 20;
         int maxTarget;
         int maxNumber;
+        int difficulty = 0;
         boolean trainingGame;
         System.out.print("Enter y to play the training game, anything else to play a random game: ");
         String choice = scanner.nextLine().toLowerCase();
         System.out.println();
+
         if (choice.equals("y")) {
             maxNumber = 1000;
             maxTarget = 1000;
@@ -43,18 +45,25 @@ public class TargetClear {
             targets = new ArrayList<Integer>(
                     Arrays.asList(-1, -1, -1, -1, -1, 23, 9, 140, 82, 121, 34, 45, 68, 75, 34, 23, 119, 43, 23, 119));
         } else {
+            System.out.println("Select a difficulty level: 0=standard, 1=easy, 2=medium, 4=hard");
+            difficulty = Integer.parseInt(scanner.nextLine().toLowerCase());
+            if (!(difficulty == 0 || difficulty == 1 || difficulty == 2 || difficulty == 4)) {
+                System.out.println("invalid difficulty. Exiting game.");
+                return;
+            }
             maxNumber = 10;
             maxTarget = 50;
             trainingGame = false;
             targets = createTargets(maxNumberOfTargets, maxTarget);
         }
-        numbersAllowed = fillNumbers(numbersAllowed, trainingGame, maxNumber);
-        playGame(targets, numbersAllowed, trainingGame, maxTarget, maxNumber);
+
+        numbersAllowed = fillNumbers(numbersAllowed, trainingGame, maxNumber, difficulty);
+        playGame(targets, numbersAllowed, trainingGame, maxTarget, maxNumber, difficulty);
         scanner.nextLine();
     }
 
     static void playGame(List<Integer> targets, List<Integer> numbersAllowed, boolean trainingGame, int maxTarget,
-            int maxNumber) {
+            int maxNumber, int difficulty) {
         IntWrapper score = new IntWrapper(0);
         boolean gameOver = false;
         while (!gameOver) {
@@ -67,7 +76,7 @@ public class TargetClear {
                 if (checkNumbersUsedAreAllInNumbersAllowed(numbersAllowed, userInputInRPN, maxNumber)) {
                     if (checkIfUserInputEvaluationIsATarget(targets, userInputInRPN, score)) {
                         removeNumbersUsed(userInput, maxNumber, numbersAllowed);
-                        numbersAllowed = fillNumbers(numbersAllowed, trainingGame, maxNumber);
+                        numbersAllowed = fillNumbers(numbersAllowed, trainingGame, maxNumber, difficulty);
                     }
                 }
             }
@@ -302,10 +311,19 @@ public class TargetClear {
         return targets;
     }
 
-    static List<Integer> fillNumbers(List<Integer> numbersAllowed, boolean trainingGame, int maxNumber) {
+    static List<Integer> fillNumbers(List<Integer> numbersAllowed, boolean trainingGame, int maxNumber,
+            int difficulty) {
+        int[] largeNumbers = { 25, 50, 75, 100 };
+        System.out.println(difficulty);
         if (trainingGame) {
             return new ArrayList<Integer>(Arrays.asList(2, 3, 2, 8, 512));
         } else {
+
+            for (int count = 0; count < difficulty; count++) {
+                int random = rGen.nextInt(largeNumbers.length);
+                numbersAllowed.add(largeNumbers[random]);
+            }
+
             while (numbersAllowed.size() < 5) {
                 numbersAllowed.add(getNumber(maxNumber));
             }
