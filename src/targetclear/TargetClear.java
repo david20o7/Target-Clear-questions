@@ -95,10 +95,6 @@ public class TargetClear {
                 }
             }
         }
-
-        if (!userInputEvaluationIsATarget) {
-            System.out.println(userInputEvaluation + " is not a valid target");
-        }
         return userInputEvaluationIsATarget;
     }
 
@@ -136,12 +132,8 @@ public class TargetClear {
                 if (temp.contains(Integer.parseInt(item))) {
                     temp.remove(temp.indexOf(Integer.parseInt((item))));
                 } else {
-                    System.out.println(item + " is not a number allowed");
                     return false;
                 }
-            } else if (item.matches("^[0-9]+$") && Integer.parseInt(item) > maxNumber) {
-                System.out.println(item + " is larger than maxNumber");
-                return false;
             }
         }
         return true;
@@ -288,21 +280,7 @@ public class TargetClear {
     }
 
     static boolean checkIfUserInputValid(String userInput) {
-
-        boolean isFixNotation = userInput.matches("^([0-9]+[\\+\\-\\*\\/])+[0-9]+$");
-        boolean isDividedZero = userInput.matches("^([0-9]+[\\/])+[0]+$");
-
-        if (isDividedZero) {
-            System.out.println("Division by zero is not allowed");
-            return false;
-        }
-
-        if (!isFixNotation) {
-            System.out.println("Invalid infix notation");
-            return false;
-        }
-
-        return true;
+        return userInput.matches("^([0-9]+[\\+\\-\\*\\/])+[0-9]+$");
     }
 
     static int getTarget(int maxTarget) {
