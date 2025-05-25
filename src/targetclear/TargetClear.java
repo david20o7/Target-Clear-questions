@@ -65,9 +65,19 @@ public class TargetClear {
             if (checkIfUserInputValid(userInput)) {
                 List<String> userInputInRPN = convertToRPN(userInput);
                 if (checkNumbersUsedAreAllInNumbersAllowed(numbersAllowed, userInputInRPN, maxNumber)) {
-                    if (checkIfUserInputEvaluationIsATarget(targets, userInputInRPN, score)) {
+
+                    IntWrapper target = new IntWrapper(-1);
+
+                    if (checkIfUserInputEvaluationIsATarget(targets, userInputInRPN, score, target)) {
+                        int numberToAdd = selectValueFromTarget(target);
+
                         removeNumbersUsed(userInput, maxNumber, numbersAllowed);
                         numbersAllowed = fillNumbers(numbersAllowed, trainingGame, maxNumber);
+
+                        if (numberToAdd != -1) {
+                            numbersAllowed.add(numberToAdd);
+                        }
+
                     }
                 }
             }
@@ -82,13 +92,47 @@ public class TargetClear {
         displayScore(score.value);
     }
 
+    static int selectValueFromTarget(IntWrapper target) {
+        List<Integer> newNumberOptions = new ArrayList<Integer>();
+
+        System.out.println(target.value);
+        System.out.print(
+                "Press y if you'd like to add the target, part of the target, otherwise press  Enter to skip");
+        String input = scanner.nextLine();
+        if (input.equals("y")) {
+            newNumberOptions.add(target.value);
+
+            if (target.value < 10) {
+                newNumberOptions.add(0);
+            } else if (target.value >= 10) {
+                String targetString = Integer.toString(target.value);
+                char[] targetChars = targetString.toCharArray();
+                for (int i = 0; i < targetChars.length; i++) {
+                    String currentChar = targetChars[i] + "";
+                    int currentCharAsInt = Integer.parseInt(currentChar);
+                    newNumberOptions.add(currentCharAsInt);
+                }
+            }
+
+            System.out.println("Select an option from this list: " + newNumberOptions.toString());
+            int userNumber = scanner.nextInt();
+            if (newNumberOptions.contains(userNumber)) {
+                return userNumber;
+            }
+        }
+
+        return -1;
+
+    }
+
     static boolean checkIfUserInputEvaluationIsATarget(List<Integer> targets, List<String> userInputInRPN,
-            IntWrapper score) {
+            IntWrapper score, IntWrapper target) {
         int userInputEvaluation = evaluateRPN(userInputInRPN);
         boolean userInputEvaluationIsATarget = false;
         if (userInputEvaluation != -1) {
             for (int count = 0; count < targets.size(); count++) {
                 if (targets.get(count) == userInputEvaluation) {
+                    target.value = targets.get(count);
                     score.value = score.value + 2;
                     targets.set(count, -1);
                     userInputEvaluationIsATarget = true;
@@ -305,10 +349,12 @@ public class TargetClear {
     static List<Integer> fillNumbers(List<Integer> numbersAllowed, boolean trainingGame, int maxNumber) {
         if (trainingGame) {
             return new ArrayList<Integer>(Arrays.asList(2, 3, 2, 8, 512));
+
         } else {
             while (numbersAllowed.size() < 5) {
                 numbersAllowed.add(getNumber(maxNumber));
             }
+
             return numbersAllowed;
         }
     }
