@@ -86,7 +86,6 @@ public class TargetClear {
             IntWrapper score) {
 
         IntWrapper usedOperandCount = new IntWrapper(0);
-        int someValue
 
         int userInputEvaluation = evaluateRPN(userInputInRPN, usedOperandCount);
 

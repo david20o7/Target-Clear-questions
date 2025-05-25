@@ -20,7 +20,7 @@ Test that the changes you have made work:
 - Run the Skeleton Program.
 - Enter y to start a training game.
 - Enter the expression: 512/8+2+2
-- Show the program correctly identifying the target 68 and increasing the user score to 9 points (8 additional points for four operands used in the expression).
+- Show the program correctly identifying the target 68 and increasing the user score to 7 points (6 additional points for four operands used in the expression).
   **[1 mark]**
 
 ## Evidence that you need to provide:
