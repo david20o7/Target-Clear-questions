@@ -91,11 +91,8 @@ public class TargetClear {
     // |2|1|3|7|9|
     // | |2|1|3|7|
     static void moveTargetsBack(List<Integer> targets) {
-        for (int count = targets.size() - 1; count > 1; count--) {
-            targets.set(count, targets.get(count - 1));
-        }
-
-        targets.set(0, -1);
+        targets.add(0, -1);
+        targets.remove(targets.size() - 1);
     }
 
     static boolean checkIfUserInputEvaluationIsATarget(List<Integer> targets, List<String> userInputInRPN,
