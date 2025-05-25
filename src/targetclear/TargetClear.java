@@ -62,7 +62,13 @@ public class TargetClear {
             System.out.print("Enter an expression: ");
             String userInput = scanner.nextLine();
             System.out.println();
-            if (checkIfUserInputValid(userInput)) {
+            if (userInput.equals("MOVE")) {
+                moveTargetsBack(targets);
+
+                // reducing the score by 1 because it's reduced by one again for every move
+                // so that the score is reduced by 2 in total.
+                score.value -= 1;
+            } else if (checkIfUserInputValid(userInput)) {
                 List<String> userInputInRPN = convertToRPN(userInput);
                 if (checkNumbersUsedAreAllInNumbersAllowed(numbersAllowed, userInputInRPN, maxNumber)) {
                     if (checkIfUserInputEvaluationIsATarget(targets, userInputInRPN, score)) {
@@ -74,12 +80,22 @@ public class TargetClear {
             score.value -= 1;
             if (targets.get(0) != -1) {
                 gameOver = true;
-            } else {
+            } else if (!userInput.equals("MOVE")) {
                 updateTargets(targets, trainingGame, maxTarget);
             }
         }
         System.out.println("Game over!");
         displayScore(score.value);
+    }
+
+    // |2|1|3|7|9|
+    // | |2|1|3|7|
+    static void moveTargetsBack(List<Integer> targets) {
+        for (int count = targets.size() - 1; count > 1; count--) {
+            targets.set(count, targets.get(count - 1));
+        }
+
+        targets.set(0, -1);
     }
 
     static boolean checkIfUserInputEvaluationIsATarget(List<Integer> targets, List<String> userInputInRPN,
@@ -110,10 +126,17 @@ public class TargetClear {
     }
 
     static void updateTargets(List<Integer> targets, boolean trainingGame, int maxTarget) {
-        for (int count = 0; count <= targets.size() - 2; count++) {
+
+        // | | |3|4|9|
+        // | |3|4|9|?|
+        for (int count = 0; count <= targets.size() - 2; count++) { // 3
             targets.set(count, targets.get(count + 1));
         }
+
+        // | |3|4|9|
         targets.remove(targets.size() - 1);
+
+        // | |3|4|9|?|
         if (trainingGame) {
             targets.add(targets.get(targets.size() - 1));
         } else {
