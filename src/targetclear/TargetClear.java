@@ -41,7 +41,7 @@ public class TargetClear {
             maxTarget = 1000;
             trainingGame = true;
             targets = new ArrayList<Integer>(
-                    Arrays.asList(-1, -1, -1, -1, -1, 23, 9, 140, 82, 121, 34, 45, 68, 75, 34, 23, 119, 43, 23, 119));
+                    Arrays.asList(-1, -1, -1, -1, -1, 23, 9, 140, 82, 121, 34, 45, 65, 71, 34, 23, 119, 43, 23, 119));
         } else {
             maxNumber = 10;
             maxTarget = 50;
@@ -58,20 +58,47 @@ public class TargetClear {
         IntWrapper score = new IntWrapper(0);
         boolean gameOver = false;
         while (!gameOver) {
+
             displayState(targets, numbersAllowed, score.value);
+            // challenge mode stuff
+            boolean challengeMode = false;
+
+            int randomNum = rGen.nextInt(4);
+            if (randomNum == 0) {
+                challengeMode = true;
+                System.out.println("Challenge Mode has been activated!");
+            }
+
             System.out.print("Enter an expression: ");
             String userInput = scanner.nextLine();
             System.out.println();
             if (checkIfUserInputValid(userInput)) {
                 List<String> userInputInRPN = convertToRPN(userInput);
-                if (checkNumbersUsedAreAllInNumbersAllowed(numbersAllowed, userInputInRPN, maxNumber)) {
-                    if (checkIfUserInputEvaluationIsATarget(targets, userInputInRPN, score)) {
+
+                if (checkNumbersUsedAreAllInNumbersAllowed(numbersAllowed, userInputInRPN, maxNumber, challengeMode)) {
+
+                    if (checkIfUserInputEvaluationIsATarget(targets, userInputInRPN, score, challengeMode)) {
+
                         removeNumbersUsed(userInput, maxNumber, numbersAllowed);
                         numbersAllowed = fillNumbers(numbersAllowed, trainingGame, maxNumber);
+
+                        if (challengeMode == true) {
+                            score.value += 10;
+                        }
+
                     }
+
                 }
+
+            } else if (challengeMode == true) {
+                // already reduced by -1 if the expression isn't valid, so reduce by 4 to reduce
+                // the score by 5.
+                score.value -= 4;
+
             }
+
             score.value -= 1;
+
             if (targets.get(0) != -1) {
                 gameOver = true;
             } else {
@@ -83,7 +110,7 @@ public class TargetClear {
     }
 
     static boolean checkIfUserInputEvaluationIsATarget(List<Integer> targets, List<String> userInputInRPN,
-            IntWrapper score) {
+            IntWrapper score, boolean challengeMode) {
         int userInputEvaluation = evaluateRPN(userInputInRPN);
         boolean userInputEvaluationIsATarget = false;
         if (userInputEvaluation != -1) {
@@ -122,7 +149,7 @@ public class TargetClear {
     }
 
     static boolean checkNumbersUsedAreAllInNumbersAllowed(List<Integer> numbersAllowed, List<String> userInputInRPN,
-            int maxNumber) {
+            int maxNumber, boolean challengeMode) {
         List<Integer> temp = new ArrayList<Integer>();
         for (int item : numbersAllowed) {
             temp.add(item);
@@ -135,6 +162,9 @@ public class TargetClear {
                     return false;
                 }
             }
+        }
+        if (challengeMode == true && temp.size() != 0) {
+            return false;
         }
         return true;
     }
