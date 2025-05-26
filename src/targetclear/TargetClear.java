@@ -58,10 +58,25 @@ public class TargetClear {
         IntWrapper score = new IntWrapper(0);
         boolean gameOver = false;
         while (!gameOver) {
-            displayState(targets, numbersAllowed, score.value);
+            boolean freeze = true;
+            int userPosition = -2;
+
+            displayState(targets, numbersAllowed, score.value, userPosition);
+
+            System.out.println(
+                    "Would you like to freeze a number, enter position of where to freeze, else write -2 to decline");
+            userPosition = scanner.nextInt();
+
+            if (userPosition == -2) {
+                freeze = false;
+            } else {
+                displayTargets(targets, userPosition);
+            }
+
             System.out.print("Enter an expression: ");
             String userInput = scanner.nextLine();
             System.out.println();
+
             if (checkIfUserInputValid(userInput)) {
                 List<String> userInputInRPN = convertToRPN(userInput);
                 if (checkNumbersUsedAreAllInNumbersAllowed(numbersAllowed, userInputInRPN, maxNumber)) {
@@ -149,8 +164,8 @@ public class TargetClear {
         return false;
     }
 
-    static void displayState(List<Integer> targets, List<Integer> numbersAllowed, int score) {
-        displayTargets(targets);
+    static void displayState(List<Integer> targets, List<Integer> numbersAllowed, int score, int userPosition) {
+        displayTargets(targets, userPosition);
         displayNumbersAllowed(numbersAllowed);
         displayScore(score);
     }
@@ -170,11 +185,13 @@ public class TargetClear {
         System.out.println();
     }
 
-    static void displayTargets(List<Integer> targets) {
+    static void displayTargets(List<Integer> targets, int userPosition) {
         System.out.print("|");
         for (int t : targets) {
             if (t == -1) {
                 System.out.print(" ");
+            } else if (t == userPosition + 1) {
+                System.out.print("<" + t + ">");
             } else {
                 System.out.print(t);
             }
