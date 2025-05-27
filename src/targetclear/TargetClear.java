@@ -25,6 +25,36 @@ public class TargetClear {
         }
     }
 
+    static class undoState {
+        private List<Integer> numbersAllowed;
+        private List<Integer> targets;
+        private IntWrapper score;
+
+        void addToUndo(List<Integer> numbersAllowedFromGame, List<Integer> targetsFromGame,
+                IntWrapper scoreFromGame) {
+
+            this.numbersAllowed = new ArrayList<Integer>(numbersAllowedFromGame);
+            this.targets = new ArrayList<Integer>(targetsFromGame);
+            this.score = new IntWrapper(scoreFromGame.value);
+
+        }
+
+        void undoLastTurn(List<Integer> numbersAllowedFromGame, List<Integer> targetsFromGame,
+                IntWrapper scoreFromGame) {
+
+            numbersAllowedFromGame.clear();
+            numbersAllowedFromGame.addAll(this.numbersAllowed);
+
+            numbersAllowedFromGame = new ArrayList<Integer>(this.numbersAllowed);
+
+            targetsFromGame.clear();
+            targetsFromGame.addAll(this.targets);
+
+            scoreFromGame.value = this.score.value;
+        }
+
+    }
+
     public static void main(String[] args) {
         List<Integer> numbersAllowed = new ArrayList<Integer>();
         List<Integer> targets;
@@ -57,19 +87,28 @@ public class TargetClear {
             int maxNumber) {
         IntWrapper score = new IntWrapper(0);
         boolean gameOver = false;
-        boolean undo = false;
+        undoState undo = new undoState();
+        boolean canUndo = false;
+
         while (!gameOver) {
+
+            displayState(targets, numbersAllowed, score.value);
+            if (canUndo) {
+                System.out.println("Would you like to undo? Press Y for yes");
+                String userUndo = scanner.nextLine();
+                if (userUndo.equals("Y")) {
+                    undo.undoLastTurn(numbersAllowed, targets, score);
+                }
+            }
+
+            undo.addToUndo(numbersAllowed, targets, score);
+            canUndo = true;
+
             displayState(targets, numbersAllowed, score.value);
             System.out.print("Enter an expression: ");
             String userInput = scanner.nextLine();
             System.out.println();
-            System.out.println("Would you like to undo the last turn?");
-            String willUndo = scanner.nextLine();
-            if (willUndo.equals("yes")) {
-                undo = true;
-                undoState(numbersAllowed, targets, score);
 
-            }
             if (checkIfUserInputValid(userInput)) {
                 List<String> userInputInRPN = convertToRPN(userInput);
                 if (checkNumbersUsedAreAllInNumbersAllowed(numbersAllowed, userInputInRPN, maxNumber)) {
@@ -104,10 +143,6 @@ public class TargetClear {
             }
         }
         return userInputEvaluationIsATarget;
-    }
-
-    static void undoState(List<Integer> numbersAllowed, List<Integer> targets, IntWrapper score) {
-
     }
 
     static void removeNumbersUsed(String userInput, int maxNumber, List<Integer> numbersAllowed) {
