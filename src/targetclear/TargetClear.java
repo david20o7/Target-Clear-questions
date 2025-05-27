@@ -57,11 +57,19 @@ public class TargetClear {
             int maxNumber) {
         IntWrapper score = new IntWrapper(0);
         boolean gameOver = false;
+        boolean undo = false;
         while (!gameOver) {
             displayState(targets, numbersAllowed, score.value);
             System.out.print("Enter an expression: ");
             String userInput = scanner.nextLine();
             System.out.println();
+            System.out.println("Would you like to undo the last turn?");
+            String willUndo = scanner.nextLine();
+            if (willUndo.equals("yes")) {
+                undo = true;
+                undoState(numbersAllowed, targets, score);
+
+            }
             if (checkIfUserInputValid(userInput)) {
                 List<String> userInputInRPN = convertToRPN(userInput);
                 if (checkNumbersUsedAreAllInNumbersAllowed(numbersAllowed, userInputInRPN, maxNumber)) {
@@ -96,6 +104,10 @@ public class TargetClear {
             }
         }
         return userInputEvaluationIsATarget;
+    }
+
+    static void undoState(List<Integer> numbersAllowed, List<Integer> targets, IntWrapper score) {
+
     }
 
     static void removeNumbersUsed(String userInput, int maxNumber, List<Integer> numbersAllowed) {
