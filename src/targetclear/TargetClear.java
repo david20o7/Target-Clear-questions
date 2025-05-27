@@ -57,19 +57,19 @@ public class TargetClear {
             int maxNumber) {
         IntWrapper score = new IntWrapper(0);
         boolean gameOver = false;
+        int userPosition = -1;
         while (!gameOver) {
-            boolean freeze = true;
-            int userPosition = -2;
 
             displayState(targets, numbersAllowed, score.value, userPosition);
 
             System.out.println(
-                    "Would you like to freeze a number, enter position of where to freeze, else write -2 to decline");
-            userPosition = scanner.nextInt();
+                    "Would you like to freeze a number, enter position of where to freeze, else write 0 to decline");
 
-            if (userPosition == -2) {
-                freeze = false;
-            } else {
+            userPosition = scanner.nextInt();
+            scanner.nextLine();
+
+            if (userPosition > 0) {
+                userPosition--;
                 displayTargets(targets, userPosition);
             }
 
@@ -90,7 +90,7 @@ public class TargetClear {
             if (targets.get(0) != -1) {
                 gameOver = true;
             } else {
-                updateTargets(targets, trainingGame, maxTarget);
+                updateTargets(targets, trainingGame, maxTarget, userPosition);
             }
         }
         System.out.println("Game over!");
@@ -124,10 +124,18 @@ public class TargetClear {
         }
     }
 
-    static void updateTargets(List<Integer> targets, boolean trainingGame, int maxTarget) {
+    static void updateTargets(List<Integer> targets, boolean trainingGame, int maxTarget, int userPosition) {
         for (int count = 0; count <= targets.size() - 2; count++) {
             targets.set(count, targets.get(count + 1));
         }
+
+        if (userPosition > 0) {
+            int temp = targets.get(userPosition);
+            targets.set(userPosition, targets.get(userPosition - 1));
+
+            targets.set(userPosition - 1, temp);
+        }
+
         targets.remove(targets.size() - 1);
         if (trainingGame) {
             targets.add(targets.get(targets.size() - 1));
@@ -186,11 +194,13 @@ public class TargetClear {
     }
 
     static void displayTargets(List<Integer> targets, int userPosition) {
+
         System.out.print("|");
-        for (int t : targets) {
+        for (int i = 0; i < targets.size(); i++) {
+            int t = targets.get(i);
             if (t == -1) {
                 System.out.print(" ");
-            } else if (t == userPosition + 1) {
+            } else if (i == userPosition) {
                 System.out.print("<" + t + ">");
             } else {
                 System.out.print(t);
