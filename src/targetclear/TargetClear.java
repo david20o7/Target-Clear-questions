@@ -80,20 +80,26 @@ public class TargetClear {
         }
         System.out.println("Game over!");
         displayScore(score.value);
+
     }
 
     static boolean checkIfUserInputEvaluationIsATarget(List<Integer> targets, List<String> userInputInRPN,
             IntWrapper score) {
         int userInputEvaluation = evaluateRPN(userInputInRPN);
         boolean userInputEvaluationIsATarget = false;
+        int counter = 0;
         if (userInputEvaluation != -1) {
             for (int count = 0; count < targets.size(); count++) {
                 if (targets.get(count) == userInputEvaluation) {
+                    counter += 1;
+                    System.out.println("your expression evalutaed to: " + userInputEvaluation);
                     score.value = score.value + 2;
                     targets.set(count, -1);
                     userInputEvaluationIsATarget = true;
                 }
+
             }
+            System.out.println("Your expression has appeared " + counter + " times in the list");
         }
         return userInputEvaluationIsATarget;
     }
@@ -135,6 +141,9 @@ public class TargetClear {
                     return false;
                 }
             }
+        }
+        if (temp.size() != 0) {
+            System.out.println("You still haven't used: " + temp);
         }
         return true;
     }
