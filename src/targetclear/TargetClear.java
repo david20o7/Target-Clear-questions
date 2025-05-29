@@ -6,12 +6,14 @@
 package targetclear;
 
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class TargetClear {
     static Scanner scanner = new Scanner(System.in);
@@ -26,31 +28,117 @@ public class TargetClear {
     }
 
     public static void main(String[] args) {
-        List<Integer> numbersAllowed = new ArrayList<Integer>();
-        List<Integer> targets;
 
-        int maxNumberOfTargets = 20;
-        int maxTarget;
-        int maxNumber;
-        boolean trainingGame;
-        System.out.print("Enter y to play the training game, anything else to play a random game: ");
-        String choice = scanner.nextLine().toLowerCase();
-        System.out.println();
-        if (choice.equals("y")) {
-            maxNumber = 1000;
-            maxTarget = 1000;
-            trainingGame = true;
-            targets = new ArrayList<Integer>(
-                    Arrays.asList(-1, -1, -1, -1, -1, 23, 9, 140, 82, 121, 34, 45, 68, 75, 34, 23, 119, 43, 23, 119));
-        } else {
-            maxNumber = 10;
-            maxTarget = 50;
-            trainingGame = false;
-            targets = createTargets(maxNumberOfTargets, maxTarget);
+        List<Integer> targets = new ArrayList<>(Arrays.asList(9, 10, 100, 5, 1000, 3, -6, 16));
+        List<Integer> numbersAllowed = new ArrayList<Integer>(Arrays.asList(2, 3, 4, 5));
+        List<Integer> sums = new ArrayList();
+        IntWrapper loopCount = new IntWrapper(0);
+        getRandomSuggestions(numbersAllowed, targets, sums, loopCount, 1);
+
+        System.out.println(sums);
+        return;
+        // List<Integer> numbersAllowed = new ArrayList<Integer>();
+        // List<Integer> targets;
+
+        // int maxNumberOfTargets = 20;
+        // int maxTarget;
+        // int maxNumber;
+        // boolean trainingGame;
+        // System.out.print("Enter y to play the training game, anything else to play a
+        // random game: ");
+        // String choice = scanner.nextLine().toLowerCase();
+        // System.out.println();
+        // if (choice.equals("y")) {
+        // maxNumber = 1000;
+        // maxTarget = 1000;
+        // trainingGame = true;
+        // targets = new ArrayList<Integer>(
+        // Arrays.asList(-1, -1, -1, -1, -1, 23, 9, 140, 82, 121, 34, 45, 68, 75, 34,
+        // 23, 119, 43, 23, 119));
+        // } else {
+        // maxNumber = 10;
+        // maxTarget = 50;
+        // trainingGame = false;
+        // targets = createTargets(maxNumberOfTargets, maxTarget);
+        // }
+        // numbersAllowed = fillNumbers(numbersAllowed, trainingGame, maxNumber);
+        // playGame(targets, numbersAllowed, trainingGame, maxTarget, maxNumber);
+        // scanner.nextLine();
+    }
+
+    static double evaluateExpression(int num1, int num2, String operator) {
+
+        double result;
+        switch (operator) {
+
+            case "-":
+                result = num1 - num2;
+                break;
+            case "*":
+                result = num1 * num2;
+                break;
+            case "/":
+                result = num1 / num2;
+                break;
+
+            case "+":
+                result = num1 + num2;
+                break;
+
+            default:
+                result = num1 + num2;
+                break;
+
         }
-        numbersAllowed = fillNumbers(numbersAllowed, trainingGame, maxNumber);
-        playGame(targets, numbersAllowed, trainingGame, maxTarget, maxNumber);
-        scanner.nextLine();
+
+        return result;
+    }
+
+    static void getRandomSuggestions(List<Integer> allowedNumbers, List<Integer> targets, List<Integer> sums,
+            IntWrapper loopCount,
+            int level) {
+
+        for (String operator : new String[] { "+", "-", "*", "/" }) {
+            for (int i = 0; i < allowedNumbers.size(); i++) {
+                for (int j = 0; j < allowedNumbers.size(); j++) {
+                    loopCount.value = loopCount.value++;
+                    if (loopCount.value >= 30) {
+                        break;
+                    }
+
+                    if (i != j) {
+                        int num1 = allowedNumbers.get(i);
+                        int num2 = allowedNumbers.get(j);
+
+                        if (operator.equals("/") & num2 != 0 && num1 % num2 != 0) {
+                            continue;
+                        } else {
+                            double evaluate = evaluateExpression(num1, num2, operator);
+
+                            if (evaluate % 1 != evaluate) {
+                                int result = (int) evaluate;
+
+                                if ((!sums.contains(result)) && targets.contains(result) && sums.size() < 5) {
+                                    sums.add(result);
+                                }
+
+                                if (level != 0) {
+                                    List<Integer> newNumbers = new ArrayList<Integer>(allowedNumbers);
+                                    newNumbers.removeAll(Arrays.asList(num1, num2));
+                                    newNumbers.add(result);
+
+                                    getRandomSuggestions(newNumbers, targets, sums, loopCount, level - 1);
+                                }
+
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        }
+
     }
 
     static void playGame(List<Integer> targets, List<Integer> numbersAllowed, boolean trainingGame, int maxTarget,
