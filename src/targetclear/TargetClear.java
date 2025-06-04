@@ -35,7 +35,10 @@ public class TargetClear {
         IntWrapper loopCount = new IntWrapper(0);
         getRandomSuggestions(numbersAllowed, targets, sums, loopCount, 1);
 
+        int random = rGen.nextInt(25);
+
         System.out.println(sums);
+        System.out.println(random);
         return;
         // List<Integer> numbersAllowed = new ArrayList<Integer>();
         // List<Integer> targets;
