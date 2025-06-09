@@ -197,43 +197,31 @@ public class TargetClear {
         precedence.put("-", 2);
         precedence.put("*", 4);
         precedence.put("/", 4);
-
-        List<String> operators = new ArrayList<String>(); // Stack to hold operators
-
-        // Process first operand and operator
+        precedence.put("(", 0);
+        precedence.put(")", 6);
+        
+        List<String> operators = new ArrayList<String>();
         int operand = getNumberFromUserInput(userInput, position);
         List<String> userInputInRPN = new ArrayList<String>();
         userInputInRPN.add(Integer.toString(operand));
         operators.add(userInput.substring(position.value - 1, position.value));
-
-        // Process the rest of the input string
         while (position.value < userInput.length()) {
-            // Get the next operand and add it to RPN list
             operand = getNumberFromUserInput(userInput, position);
             userInputInRPN.add(Integer.toString(operand));
-
             if (position.value < userInput.length()) {
-                // If there are more characters, process the next operator
                 String currentOperator = userInput.substring(position.value - 1, position.value);
-
-                // Pop operators with higher precedence and add them to RPN list
                 while (operators.size() > 0
                         && precedence.get(operators.get(operators.size() - 1)) > precedence.get(currentOperator)) {
                     userInputInRPN.add(operators.get(operators.size() - 1));
                     operators.remove(operators.size() - 1);
                 }
-
-                // Pop operators with equal precedence and add them to RPN list
                 if (operators.size() > 0
                         && precedence.get(operators.get(operators.size() - 1)) == precedence.get(currentOperator)) {
                     userInputInRPN.add(operators.get(operators.size() - 1));
                     operators.remove(operators.size() - 1);
                 }
-
-                // Push current operator to the stack
                 operators.add(currentOperator);
             } else {
-                // End of input reached, pop all remaining operators to RPN list
                 while (operators.size() > 0) {
                     userInputInRPN.add(operators.get(operators.size() - 1));
                     operators.remove(operators.size() - 1);
