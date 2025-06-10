@@ -59,17 +59,16 @@ public class TargetClear {
         boolean gameOver = false;
         while (!gameOver) {
             displayState(targets, numbersAllowed, score.value);
+
             System.out.print("Enter an expression: ");
             String userInput = scanner.nextLine();
             System.out.println();
+
+            ;
             if (checkIfUserInputValid(userInput)) {
 
-                List<String> userInputInRPN = convertToRPN(userInput);
-                System.out.println(userInputInRPN);
+                List<String> userInputInRPN = userInputInRPN = convertToRPN(userInput);
 
-                // 8+3-2 = 8, 3, +, 2, -
-                // 8+(3-2) = 3, 2, -, 8, +
-                // (8+2) * 2 + 3 = 8, 2 +, 2, *, 3, +
                 if (checkNumbersUsedAreAllInNumbersAllowed(numbersAllowed, userInputInRPN, maxNumber)) {
                     if (checkIfUserInputEvaluationIsATarget(targets, userInputInRPN, score)) {
                         removeNumbersUsed(userInput, maxNumber, numbersAllowed);
@@ -85,7 +84,17 @@ public class TargetClear {
             }
         }
         System.out.println("Game over!");
+
         displayScore(score.value);
+
+        // as the user if they want to play again. If so, re-run the game.
+        System.out.print("Do you want to play again? (y/n): ");
+        String playAgain = scanner.nextLine().toLowerCase();
+        if (playAgain.equals("y")) {
+            main(null); // Re-run the main method with null args
+        } else {
+            System.out.println("Thanks for playing!");
+        }
     }
 
     static boolean checkIfUserInputEvaluationIsATarget(List<Integer> targets, List<String> userInputInRPN,
@@ -106,6 +115,7 @@ public class TargetClear {
 
     static void removeNumbersUsed(String userInput, int maxNumber, List<Integer> numbersAllowed) {
         List<String> userInputInRPN = convertToRPN(userInput);
+
         for (String item : userInputInRPN) {
             if (checkValidNumber(item, maxNumber)) {
                 if (numbersAllowed.contains(Integer.parseInt(item))) {
@@ -123,7 +133,16 @@ public class TargetClear {
         if (trainingGame) {
             targets.add(targets.get(targets.size() - 1));
         } else {
-            targets.add(getTarget(maxTarget));
+            // targets.add(getTarget(maxTarget));
+            boolean looking = true;
+            while (looking) {
+                int newTarget = getTarget(maxTarget);
+                if (!targets.contains(newTarget)) {
+                    targets.add(getTarget(maxTarget));
+                    looking = false;
+                }
+
+            }
         }
     }
 
@@ -199,7 +218,7 @@ public class TargetClear {
         precedence.put("/", 4);
         precedence.put("(", 0);
         precedence.put(")", 6);
-        
+
         List<String> operators = new ArrayList<String>();
         int operand = getNumberFromUserInput(userInput, position);
         List<String> userInputInRPN = new ArrayList<String>();
@@ -306,7 +325,17 @@ public class TargetClear {
             targets.add(-1);
         }
         for (int count = 1; count <= sizeOfTargets - 5; count++) {
-            targets.add(getTarget(maxTarget));
+
+            boolean looking = true;
+            while (looking) {
+                int newTarget = getTarget(maxTarget);
+                if (!targets.contains(newTarget)) {
+                    targets.add(getTarget(maxTarget));
+                    looking = false;
+                }
+
+            }
+
         }
         return targets;
     }
@@ -316,7 +345,11 @@ public class TargetClear {
             return new ArrayList<Integer>(Arrays.asList(2, 3, 2, 8, 512));
         } else {
             while (numbersAllowed.size() < 5) {
-                numbersAllowed.add(getNumber(maxNumber));
+                int newTarget = getNumber(maxNumber);
+                if (!numbersAllowed.contains(newTarget)) {
+                    numbersAllowed.add(newTarget);
+                }
+
             }
             return numbersAllowed;
         }
